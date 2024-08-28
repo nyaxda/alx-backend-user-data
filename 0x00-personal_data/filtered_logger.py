@@ -4,13 +4,8 @@ import logging
 import re
 from typing import Tuple, Union
 import mysql.connector
-from mysql.connector import CMySQLConnection
-from mysql.connector.pooling import PooledMySQLConnection
-from mysql.connector.connection import (
-    MySQLConnection,
-    MySQLConnectionAbstract
-)
 import os
+
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
@@ -41,7 +36,7 @@ class RedactingFormatter(logging.Formatter):
         return super().format(record)
 
 
-def get_logger():
+def get_logger() -> logging.Logger:
     """ Get Logger function"""
     logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
@@ -52,14 +47,11 @@ def get_logger():
     return logger
 
 
-def get_db() -> Union[MySQLConnection,
-                      CMySQLConnection,
-                      PooledMySQLConnection,
-                      MySQLConnectionAbstract]:
+def get_db():
     """ Get DB function"""
-    host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost'),
-    user = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root'),
-    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', ''),
+    host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
+    user = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
+    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
     database = os.getenv('PERSONAL_DATA_DB_NAME', '')
 
     connection = mysql.connector.connect(
@@ -75,16 +67,15 @@ def get_db() -> Union[MySQLConnection,
 def main():
     """main function"""
     db = get_db()
-    cursor = db.cursor()
     logger = get_logger()
     try:
         with db.cursor() as cursor:
             cursor.execute("SELECT * FROM users")
-        for row in cursor:
-            message = "; ".join(
-                [f"{key}={value}" for key,
-                 value in zip(cursor.column_names, row)]) + ";"
-            logger.info(message)
+            for row in cursor:
+                message = "; ".join(
+                    [f"{key}={value}" for key,
+                     value in zip(cursor.column_names, row)]) + ";"
+                logger.info(message)
     finally:
         db.close()
 
