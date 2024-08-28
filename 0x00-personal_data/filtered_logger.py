@@ -4,6 +4,8 @@ import logging
 import re
 from typing import Tuple
 
+PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
+
 
 def filter_datum(fields, redaction, message, separator):
     pattern = fr"({'|'.join(fields)})=[^{separator}]+"
@@ -23,12 +25,16 @@ class RedactingFormatter(logging.Formatter):
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
-        message = record.getMessage()
-        redacted_message = filter_datum(
-             self.fields,
-             self.REDACTION,
-             message,
-             self.SEPARATOR
-            )
-        record.msg = redacted_message
+        record.msg = filter_datum(
+             self.fields, self.REDACTION, record.getMessage(), self.SEPARATOR)
         return super().format(record)
+
+
+def get_logger() -> logging.Logger:
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+    handler = logging.StreamHandler()
+    handler.setFormatter(RedactingFormatter(fields=PII_FIELDS))
+    logger.addHandler(handler)
+    return logger
