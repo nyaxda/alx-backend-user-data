@@ -2,7 +2,15 @@
 """ Personal Data Module"""
 import logging
 import re
-from typing import Tuple
+from typing import Tuple, Union
+import mysql.connector
+from mysql.connector import CMySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
+from mysql.connector.connection import (
+    MySQLConnection,
+    MySQLConnectionAbstract
+)
+import os
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
@@ -30,7 +38,7 @@ class RedactingFormatter(logging.Formatter):
         return super().format(record)
 
 
-def get_logger() -> logging.Logger:
+def get_logger():
     logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
     logger.propagate = False
@@ -38,3 +46,22 @@ def get_logger() -> logging.Logger:
     handler.setFormatter(RedactingFormatter(fields=PII_FIELDS))
     logger.addHandler(handler)
     return logger
+
+
+def get_db() -> Union[MySQLConnection,
+                      CMySQLConnection,
+                      PooledMySQLConnection,
+                      MySQLConnectionAbstract]:
+    host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost'),
+    user = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root'),
+    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', ''),
+    database = os.getenv('PERSONAL_DATA_DB_NAME', '')
+
+    connection = mysql.connector.connect(
+        host=host,
+        port=3306,
+        user=user,
+        password=password,
+        database=database
+    )
+    return connection
