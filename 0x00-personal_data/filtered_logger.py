@@ -16,6 +16,7 @@ PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
 
 def filter_datum(fields, redaction, message, separator):
+    """ Filter Datum function"""
     pattern = fr"({'|'.join(fields)})=[^{separator}]+"
     return re.sub(pattern, fr"\1={redaction}", message)
 
@@ -29,16 +30,19 @@ class RedactingFormatter(logging.Formatter):
     SEPARATOR = ";"
 
     def __init__(self, fields: Tuple[str]):
+        """ Redacting Formatter class"""
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
+        """ Format function"""
         record.msg = filter_datum(
              self.fields, self.REDACTION, record.getMessage(), self.SEPARATOR)
         return super().format(record)
 
 
 def get_logger():
+    """ Get Logger function"""
     logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
     logger.propagate = False
@@ -52,6 +56,7 @@ def get_db() -> Union[MySQLConnection,
                       CMySQLConnection,
                       PooledMySQLConnection,
                       MySQLConnectionAbstract]:
+    """ Get DB function"""
     host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost'),
     user = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root'),
     password = os.getenv('PERSONAL_DATA_DB_PASSWORD', ''),
@@ -65,3 +70,24 @@ def get_db() -> Union[MySQLConnection,
         database=database
     )
     return connection
+
+
+def main():
+    """main function"""
+    db = get_db()
+    cursor = db.cursor()
+    logger = get_logger()
+    try:
+        with db.cursor() as cursor:
+            cursor.execute("SELECT * FROM users")
+        for row in cursor:
+            message = "; ".join(
+                [f"{key}={value}" for key,
+                 value in zip(cursor.column_names, row)]) + ";"
+            logger.info(message)
+    finally:
+        db.close()
+
+
+if __name__ == "__main__":
+    main()
