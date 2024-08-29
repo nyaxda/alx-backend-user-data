@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """ Personal Data Module"""
-import bcrypt
+import bcrypt # type: ignore
 
 
 def hash_password(password: str) -> bytes:
