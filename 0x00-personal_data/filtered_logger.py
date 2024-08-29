@@ -2,7 +2,7 @@
 """ Personal Data Module"""
 import logging
 import re
-from typing import Tuple
+from typing import List
 import mysql.connector
 import os
 
@@ -10,10 +10,11 @@ import os
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
 
-def filter_datum(fields, redaction, message, separator):
-    """ Filter Datum function"""
-    pattern = fr"({'|'.join(fields)})=[^{separator}]+"
-    return re.sub(pattern, fr"\1={redaction}", message)
+def filter_datum(fields: List[str], redaction: str,
+                 message: str, separator: str) -> str:
+    """returns the log message obfuscated"""
+    pattern = rf"({'|'.join(fields)})=[^{separator}]*"
+    return re.sub(pattern, rf"\1={redaction}", message)
 
 
 class RedactingFormatter(logging.Formatter):
@@ -24,7 +25,7 @@ class RedactingFormatter(logging.Formatter):
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
 
-    def __init__(self, fields: Tuple[str]):
+    def __init__(self, fields: List[str]):
         """ Redacting Formatter class"""
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields
