@@ -10,10 +10,11 @@ import os
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
 
-def filter_datum(fields, redaction, message, separator):
-    """ Filter Datum function"""
-    pattern = fr"({'|'.join(fields)})=[^{separator}]+"
-    return re.sub(pattern, fr"\1={redaction}", message)
+def filter_datum(fields: List[str], redaction: str,
+                 message: str, separator: str) -> str:
+    """returns the log message obfuscated"""
+    pattern = rf"({'|'.join(fields)})=[^{separator}]*"
+    return re.sub(pattern, rf"\1={redaction}", message)
 
 
 class RedactingFormatter(logging.Formatter):
