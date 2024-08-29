@@ -12,7 +12,7 @@ PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
 def filter_datum(fields, redaction, message, separator):
     """ Filter Datum function"""
-    pattern = fr"({'|'.join(fields)})=[^{separator}]*"
+    pattern = fr"({'|'.join(fields)})=[^{separator}]+"
     return re.sub(pattern, fr"\1={redaction}", message)
 
 
