@@ -19,7 +19,6 @@ class BasicAuth(Auth):
                 or authorization_header[:6] != 'Basic '):
             return None
         return authorization_header[6:]
-<<<<<<< HEAD
 
 
     def decode_base64_authorization_header(
@@ -82,5 +81,3 @@ class BasicAuth(Auth):
         auth_token = self.decode_base64_authorization_header(b64_auth_token)
         email, password = self.extract_user_credentials(auth_token)
         return self.user_object_from_credentials(email, password)
-=======
->>>>>>> f8c0ca6996fb320e0c61eebe21e7ff82e4907d9a
