@@ -4,9 +4,10 @@
 from flask import request
 from api.v1.views import app_views
 from models.user import User
-from typing import List, Type
+from typing import List, Tuple, TypeVar
 from api.v1.auth.auth import Auth
 import binascii
+import base64
 
 
 class BasicAuth(Auth):
@@ -19,7 +20,6 @@ class BasicAuth(Auth):
                 or authorization_header[:6] != 'Basic '):
             return None
         return authorization_header[6:]
-
 
     def decode_base64_authorization_header(
             self,
