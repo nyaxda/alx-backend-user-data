@@ -7,6 +7,7 @@ from api.v1.views import app_views
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
 from api.v1.auth.auth import Auth
+from typing import Optional
 
 import os
 
@@ -21,7 +22,7 @@ if auth_type == 'auth':
     auth = Auth()
 
 @app.before_request
-def before_request():
+def before_request() -> Optional[str]:
     """ Before request"""
     if auth is None:
         return
