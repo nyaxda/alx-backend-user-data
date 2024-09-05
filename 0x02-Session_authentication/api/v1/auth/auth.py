@@ -6,6 +6,7 @@ from api.v1.views import app_views
 from models.user import User
 from typing import List, Type
 import re
+from os import getenv
 
 
 class Auth:
@@ -42,3 +43,9 @@ class Auth:
     def current_user(self, request=None) -> Type[User]:
         """current_user"""
         return None
+
+    def session_cookie(self, request=None):
+        if request is None:
+            return None
+        session_name = getenv('SESSION_NAME', '_my_session_id')
+        return request.cookies.get(session_name)
