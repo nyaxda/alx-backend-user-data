@@ -3,7 +3,8 @@
 
 from flask import request, jsonify
 from api.v1.views import app_views
-from api.v1.auth.session_auth import SessionAuth
+from models.user import User
+from os import getenv
 
 
 @app_views.route('/auth_session/login',
@@ -17,11 +18,13 @@ def auth_session_login():
     if not password:
         return jsonify({"error": "password missing"}), 400
     user = User.search({'email': email})
-    if not user:
+    if not user or len(user) == 0:
         return jsonify({"error": "no user found for this email"}), 404
     if not user[0].is_valid_password(password):
         return jsonify({"error": "wrong password"}), 401
-    session_id = SessionAuth.create_session(user[0].id)
+    from api.v1.app import auth
+    session_id = auth.create_session(user[0].id)
     response = jsonify(user[0].to_json())
-    response.set_cookie('my_session_id', session_id)
+    session_name = getenv('SESSION_NAME', '_my_session_id')
+    response.set_cookie(session_name, session_id)
     return response
