@@ -12,7 +12,8 @@ class Auth:
     """Auth class"""
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """require_auth"""
-        # if path is None or excluded_paths is None or len(excluded_paths) == 0:
+        # if path is None or excluded_paths is
+        # None or len(excluded_paths) == 0:
         #     return True
         # if path[-1] != '/':
         #     path += '/'
@@ -41,3 +42,8 @@ class Auth:
     def current_user(self, request=None) -> Type[User]:
         """current_user"""
         return None
+
+
+class SessionAuth(Auth):
+    """SessionAuth class"""
+    pass
