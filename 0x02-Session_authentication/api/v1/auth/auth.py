@@ -42,8 +42,3 @@ class Auth:
     def current_user(self, request=None) -> Type[User]:
         """current_user"""
         return None
-
-
-class SessionAuth(Auth):
-    """SessionAuth class"""
-    pass
