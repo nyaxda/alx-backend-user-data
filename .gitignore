@@ -1,1 +1,5 @@
 *.pyc
+0x02-Session_authentication/api/.DS_Store
+0x02-Session_authentication/api/v1/.DS_Store
+0x02-Session_authentication/api/v1/views/.DS_Store
+0x02-Session_authentication/models/.DS_Store
