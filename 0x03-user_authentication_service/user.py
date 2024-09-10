@@ -13,5 +13,5 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     email = Column(VARCHAR(250), nullable=False)
     hashed_password = Column(VARCHAR(250), nullable=False)
-    session = Column(VARCHAR(250))
+    session_id = Column(VARCHAR(250))
     reset_token = Column(VARCHAR(250))
