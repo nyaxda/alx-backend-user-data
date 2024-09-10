@@ -33,10 +33,10 @@ class DB:
     def add_user(self, email: str, hashed_password: str) -> User:
         """add a new user to the database"""
         try:
-            new_user = User(email=email, hashed_password=hashed_password)
-            self._session.add(new_user)
+            user = User(email=email, hashed_password=hashed_password)
+            self._session.add(user)
             self._session.commit()
         except Exception:
             self._session.rollback()
-            new_user = None
-        return new_user
+            user = None
+        return user
