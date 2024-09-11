@@ -54,3 +54,12 @@ class DB:
             return user
         except NoResultFound:
             raise NoResultFound
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        user = self.find_user_by(id=user_id)
+        try:
+            for key, value in kwargs.items():
+                setattr(user, key, value)
+        except Exception:
+            self._session.rollback()
+            raise ValueError
