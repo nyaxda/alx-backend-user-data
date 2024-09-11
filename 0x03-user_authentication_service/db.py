@@ -43,6 +43,7 @@ class DB:
         return user
 
     def find_user_by(self, **kwargs) -> User:
+        """find a user by a given attribute"""
         if not kwargs:
             raise InvalidRequestError
         try:
