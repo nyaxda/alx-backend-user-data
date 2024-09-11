@@ -56,6 +56,7 @@ class DB:
             raise NoResultFound
 
     def update_user(self, user_id: int, **kwargs) -> None:
+        """Update a user by arbitrary keyword arguments."""
         user = self.find_user_by(id=user_id)
         try:
             for key, value in kwargs.items():
