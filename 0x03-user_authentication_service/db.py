@@ -43,13 +43,16 @@ class DB:
         return user
 
     def find_user_by(self, **kwargs) -> User:
-        """find a user by a given attribute"""
-        if not kwargs:
-            raise InvalidRequestError
+        """searches users in database
+        """
+        current_sesh = self._session
         try:
-            user = self._session.query(User).filter_by(**kwargs).first()
+            user = current_sesh.query(User).filter_by(**kwargs).first()
             if user is None:
                 raise NoResultFound
-            return user
         except NoResultFound:
             raise NoResultFound
+        except Exception as e:
+            raise InvalidRequestError
+
+        return user
