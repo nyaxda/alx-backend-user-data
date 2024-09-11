@@ -43,7 +43,7 @@ class DB:
             user = None
         return user
 
-    def find_user_by(self, **kwargs):
+    def find_user_by(self, **kwargs) -> User:
         """find user by kwargs"""
         if not kwargs:
             raise InvalidRequestError

@@ -3,3 +3,8 @@
 0x02-Session_authentication/api/v1/.DS_Store
 0x02-Session_authentication/api/v1/views/.DS_Store
 0x02-Session_authentication/models/.DS_Store
+0x00-personal_data/main.py
+0x03-user_authentication_service/a.db
+0x03-user_authentication_service/main.py
+0x00-personal_data/main.py
+0x03-user_authentication_service/main.py
