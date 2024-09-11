@@ -42,17 +42,3 @@ class DB:
             self._session.rollback()
             user = None
         return user
-
-    def find_user_by(self, **kwargs) -> User:
-        """find user by kwargs"""
-        if not kwargs:
-            raise InvalidRequestError
-        try:
-            user = self._session.query(User).filter_by(**kwargs).first()
-            if user is None:
-                raise NoResultFound
-        except NoResultFound:
-            raise NoResultFound
-        except Exception as e:
-            raise InvalidRequestError
-        return user
