@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """app module"""
 
-from flask import Flask, jsonify, request, abort, make_response
+from flask import (Flask, jsonify, request, abort,
+                   make_response, url_for, redirect)
 from auth import Auth
 
 AUTH = Auth()
@@ -40,13 +41,14 @@ def login():
 
 @app.route('/sessions', methods=['DELETE'], strict_slashes=False)
 def logout():
+    """Logs out a user"""
     cookies = request.cookies
     session_id = cookies.get('session_id')
     user = AUTH.get_user_from_session_id(session_id)
-    AUTH.destroy_session(user.id)
-    response = make_response(jsonify({"message": "logged out"}))
-    response.delete_cookie('session_id')
-    return response
+    if user:
+        AUTH.destroy_session(user.id)
+        return redirect(url_for('home'))
+    return abort(403)
 
 
 if __name__ == "__main__":
