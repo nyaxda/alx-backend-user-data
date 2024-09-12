@@ -7,6 +7,7 @@ from sqlalchemy.exc import InvalidRequestError
 from db import DB
 from user import User
 import uuid
+from typing import Optional
 
 
 def _hash_password(password: str) -> bytes:
@@ -49,12 +50,21 @@ class Auth:
             return False
         return False
 
-    def create_session(self, email: str) -> str:
+    def create_session(self, email: str) -> Optional[str]:
         """Create a session"""
         try:
             user = self._db.find_user_by(email=email)
             session_id = _generate_uuid()
             self._db.update_user(user.id, session_id=session_id)
             return session_id
+        except NoResultFound:
+            return None
+
+    def get_user_from_session_id(self, session_id: str) -> Optional[User]:
+        """Get a user from a session ID"""
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            if user:
+                return user
         except NoResultFound:
             return None
