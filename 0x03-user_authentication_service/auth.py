@@ -87,10 +87,9 @@ class Auth:
         """Updates Users password"""
         try:
             user = self._db.find_user_by(reset_token=reset_token)
-            new_password = _hash_password(password)
-            self._db.update_user(user.id, hashed_password=new_password,
-                                 reset_token=None)
         except NoResultFound:
             raise ValueError
-        except InvalidRequestError:
-            raise ValueError
+        else:
+            user.hashed_password = _hash_password(password)
+            user.reset_token = None
+            return None
